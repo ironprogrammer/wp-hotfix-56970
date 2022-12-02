@@ -31,6 +31,82 @@ function wp_hotfix_56970_init() {
 }
 
 /**
+ * Override wp_get_global_stylesheet in wp-includes/global-styles-and-settings.php.
+ *
+ * Returns the stylesheet resulting of merging core, theme, and user data.
+ *
+ * @param array $types Types of styles to load. Optional.
+ *                     It accepts 'variables', 'styles', 'presets' as values.
+ *                     If empty, it'll load all for themes with theme.json support
+ *                     and only [ 'variables', 'presets' ] for themes without theme.json support.
+ * @return string Stylesheet.
+ */
+function wp_hotfix_611_get_global_stylesheet( $types = array() ) {
+    // Ignore cache when `WP_DEBUG` is enabled, so it doesn't interfere with the theme developers workflow.
+    $can_use_cached = empty( $types ) && ! WP_DEBUG;
+    $cache_key      = 'wp_get_global_stylesheet';
+    $cache_group    = 'theme_json';
+    if ( $can_use_cached ) {
+        $cached = wp_cache_get( $cache_key, $cache_group );
+        if ( $cached ) {
+            return $cached;
+        }
+    }
+    $tree                = WP_Theme_JSON_Resolver::get_merged_data();
+    $supports_theme_json = WP_Theme_JSON_Resolver::theme_has_support();
+    if ( empty( $types ) && ! $supports_theme_json ) {
+        $types = array( 'variables', 'presets', 'base-layout-styles' );
+    } elseif ( empty( $types ) ) {
+        $types = array( 'variables', 'styles', 'presets' );
+    }
+
+    /*
+     * If variables are part of the stylesheet, then add them.
+     * This is so themes without a theme.json still work as before 5.9:
+     * they can override the default presets.
+     * See https://core.trac.wordpress.org/ticket/54782
+     */
+    $styles_variables = '';
+    if ( in_array( 'variables', $types, true ) ) {
+        /*
+         * Only use the default, theme, and custom origins. Why?
+         * Because styles for `blocks` origin are added at a later phase
+         * (i.e. in the render cycle). Here, only the ones in use are rendered.
+         * @see wp_add_global_styles_for_blocks
+         */
+        $origins          = array( 'default', 'theme', 'custom' );
+        $styles_variables = $tree->get_stylesheet( array( 'variables' ), $origins );
+        $types            = array_diff( $types, array( 'variables' ) );
+    }
+
+    /*
+     * For the remaining types (presets, styles), we do consider origins:
+     *
+     * - themes without theme.json: only the classes for the presets defined by core
+     * - themes with theme.json: the presets and styles classes, both from core and the theme
+     */
+    $styles_rest = '';
+    if ( ! empty( $types ) ) {
+        /*
+         * Only use the default, theme, and custom origins. Why?
+         * Because styles for `blocks` origin are added at a later phase
+         * (i.e. in the render cycle). Here, only the ones in use are rendered.
+         * @see wp_add_global_styles_for_blocks
+         */
+        $origins = array( 'default', 'theme', 'custom' );
+        if ( ! $supports_theme_json ) {
+            $origins = array( 'default' );
+        }
+        $styles_rest = $tree->get_stylesheet( $types, $origins );
+    }
+    $stylesheet = $styles_variables . $styles_rest;
+    if ( $can_use_cached ) {
+        wp_cache_set( $cache_key, $stylesheet, $cache_group );
+    }
+    return $stylesheet;
+}
+
+/**
  * Clean the caches under the theme_json group.
  */
 function wp_hotfix_611_wp_clean_theme_json_caches() {
