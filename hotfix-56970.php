@@ -10,6 +10,10 @@ WP_Hotfix_56970_Controller::init();
 
 class WP_Hotfix_56970_Controller {
     public static function init() {
+        add_action( 'init', 'wp_hotfix_56970_init' );
     }
+}
+
+function wp_hotfix_56970_init() {
 }
 
