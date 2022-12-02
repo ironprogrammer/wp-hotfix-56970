@@ -5,3 +5,11 @@
  * Version: 0.1
  */
 
+// Initialize plugin.
+WP_Hotfix_56970_Controller::init();
+
+class WP_Hotfix_56970_Controller {
+    public static function init() {
+    }
+}
+
