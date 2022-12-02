@@ -19,6 +19,14 @@ function wp_hotfix_56970_init() {
 
     // Issue described in Trac 56970 only affects upgrade from < 6.1 to 6.1.1.
     if ( '6.1.1' === $wp_version ) {
+        // Unhook default global styles enqueue.
+        remove_action( 'wp_enqueue_scripts', 'wp_enqueue_global_styles' );
+        remove_action( 'wp_footer', 'wp_enqueue_global_styles', 1 );
+
+        // Hook override global styles enqueue.
+        add_action( 'wp_enqueue_scripts', 'wp_hotfix_611_enqueue_global_styles' );
+        add_action( 'wp_footer', 'wp_hotfix_611_enqueue_global_styles', 1 );
+
         // Unhook default cache cleaning mechanism.
         remove_action( 'switch_theme', array( 'WP_Theme_JSON_Resolver', 'clean_cached_data' ) );
         remove_action( 'start_previewing_theme', array( 'WP_Theme_JSON_Resolver', 'clean_cached_data' ) );
@@ -28,6 +36,51 @@ function wp_hotfix_56970_init() {
         add_action( 'start_previewing_theme', 'wp_hotfix_611_wp_clean_theme_json_caches' );
         add_action( 'plugins_loaded', 'wp_hotfix_611_wp_add_non_persistent_theme_json_cache_group' );
     }
+}
+
+/**
+ * Override wp_enqueue_global_styles in wp-includes/script-loader.php.
+ *
+ * Enqueues the global styles defined via theme.json.
+ */
+function wp_hotfix_611_enqueue_global_styles() {
+    $separate_assets  = wp_should_load_separate_core_block_assets();
+    $is_block_theme   = wp_is_block_theme();
+    $is_classic_theme = ! $is_block_theme;
+
+    /*
+     * Global styles should be printed in the head when loading all styles combined.
+     * The footer should only be used to print global styles for classic themes with separate core assets enabled.
+     *
+     * See https://core.trac.wordpress.org/ticket/53494.
+     */
+    if (
+        ( $is_block_theme && doing_action( 'wp_footer' ) ) ||
+        ( $is_classic_theme && doing_action( 'wp_footer' ) && ! $separate_assets ) ||
+        ( $is_classic_theme && doing_action( 'wp_enqueue_scripts' ) && $separate_assets )
+    ) {
+        return;
+    }
+
+    /*
+     * If loading the CSS for each block separately, then load the theme.json CSS conditionally.
+     * This removes the CSS from the global-styles stylesheet and adds it to the inline CSS for each block.
+     * This filter must be registered before calling wp_get_global_stylesheet();
+     */
+    add_filter( 'wp_theme_json_get_style_nodes', 'wp_filter_out_block_nodes' );
+
+    $stylesheet = wp_hotfix_611_get_global_stylesheet();
+
+    if ( empty( $stylesheet ) ) {
+        return;
+    }
+
+    wp_register_style( 'global-styles', false, array(), true, true );
+    wp_add_inline_style( 'global-styles', $stylesheet );
+    wp_enqueue_style( 'global-styles' );
+
+    // Add each block as an inline css.
+    wp_add_global_styles_for_blocks();
 }
 
 /**
