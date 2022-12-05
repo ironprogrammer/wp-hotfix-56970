@@ -27,6 +27,9 @@ function wp_hotfix_56970_init() {
         add_action( 'wp_enqueue_scripts', 'wp_hotfix_611_enqueue_global_styles' );
         add_action( 'wp_footer', 'wp_hotfix_611_enqueue_global_styles', 1 );
 
+        // Hook override for block editor styles.
+        add_filter( 'block_editor_settings_all', 'wp_hotfix_611_get_block_editor_settings', PHP_INT_MAX );
+
         // Unhook default cache cleaning mechanism.
         remove_action( 'switch_theme', array( 'WP_Theme_JSON_Resolver', 'clean_cached_data' ) );
         remove_action( 'start_previewing_theme', array( 'WP_Theme_JSON_Resolver', 'clean_cached_data' ) );
@@ -157,6 +160,16 @@ function wp_hotfix_611_get_global_stylesheet( $types = array() ) {
         wp_cache_set( $cache_key, $stylesheet, $cache_group );
     }
     return $stylesheet;
+}
+
+/**
+ * Add styles to the block editor settings.
+ *
+ * @param array $settings Existing block editor settings.
+ * @return array New block editor settings.
+ */
+function wp_hotfix_611_get_block_editor_settings( $settings ) {
+    return $settings;
 }
 
 /**
