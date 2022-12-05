@@ -169,7 +169,51 @@ function wp_hotfix_611_get_global_stylesheet( $types = array() ) {
  * @return array New block editor settings.
  */
 function wp_hotfix_611_get_block_editor_settings( $settings ) {
-    return $settings;
+	// Recreate global styles.
+	$new_global_styles = array();
+	$presets           = array(
+		array(
+			'css'            => 'variables',
+			'__unstableType' => 'presets',
+			'isGlobalStyles' => true,
+		),
+		array(
+			'css'            => 'presets',
+			'__unstableType' => 'presets',
+			'isGlobalStyles' => true,
+		),
+	);
+	foreach ( $presets as $preset_style ) {
+		$actual_css = wp_hotfix_611_get_global_stylesheet( array( $preset_style['css'] ) );
+		if ( '' !== $actual_css ) {
+			$preset_style['css'] = $actual_css;
+			$new_global_styles[] = $preset_style;
+		}
+	}
+
+	if ( WP_Theme_JSON_Resolver::theme_has_support() ) {
+		$block_classes = array(
+			'css'            => 'styles',
+			'__unstableType' => 'theme',
+			'isGlobalStyles' => true,
+		);
+	} else {
+		// If there is no `theme.json` file, ensure base layout styles are still available.
+		$block_classes = array(
+			'css'            => 'base-layout-styles',
+			'__unstableType' => 'base-layout',
+			'isGlobalStyles' => true,
+		);
+	}
+	$styles_css = wp_hotfix_611_get_global_stylesheet( array( $block_classes['css'] ) );
+	if ( '' !== $styles_css ) {
+		$block_classes['css'] = $styles_css;
+		$new_global_styles[]  = $block_classes;
+	}
+
+	$settings['styles'] = array_merge( $new_global_styles, get_block_editor_theme_styles() );
+
+	return $settings;
 }
 
 /**
