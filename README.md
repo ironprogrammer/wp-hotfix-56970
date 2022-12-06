@@ -5,7 +5,7 @@ Moves global stylesheet from transient to WP_Object_Cache, and resolves an inlin
 See [Trac 56970](https://core.trac.wordpress.org/ticket/56970) for additional details.
 
 ## Purpose
-If testing with this plugin is shown to resolve the issues reported in [Trac 56970](https://core.trac.wordpress.org/ticket/56970), then the [proposed fix](https://github.com/WordPress/wordpress-develop/pull/3712) will be included in a future 6.1.2 minor release.
+If testing with this plugin is shown to resolve the issues reported in [Trac 56970](https://core.trac.wordpress.org/ticket/56970), then the [proposed fix](https://github.com/WordPress/wordpress-develop/pull/3712) could be included in a future minor release.
 
 ## Installation
 Copy `hotfix-56970.php` to your `wp-content/plugins/` folder, and activate it on the *Plugins > Installed Plugins* screen.
