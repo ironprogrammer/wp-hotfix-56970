@@ -18,10 +18,10 @@ Testing requires starting with a standard WordPress install of version 5.9 throu
 3. Navigate to *Settings > Permalinks* and select anything *except for* the "Plain" structure.
 4. Navigate to *Posts > Add New*. Insert a Gallery block and add three images.
 5. Save the post and view it on the frontend. Confirm that the images are displayed in 3 columns.
-6. [Install and activate the hotfix plugin](#installation).
+6. [Install and activate the test plugin](#installation).
 7. Upgrade the site to WordPress 6.1.1.
 8. View the same post from Step 4, and confirm that it displays the images in 3 columns on the frontend.
 9. Navigate to *Posts > All Posts* and edit the post. Confirm that the images in the block editor are displayed in 3 columns and no errors occur.
 
 ## Reporting Issues
-Please open an issue in [this hotfix plugin repository](https://github.com/ironprogrammer/wp-hotfix-56970/issues).
+Please open an issue in [this test plugin repository](https://github.com/ironprogrammer/wp-hotfix-56970/issues).
