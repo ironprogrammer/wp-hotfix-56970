@@ -1,6 +1,6 @@
 # Hotfix for Trac 56970
 
-Cleans `theme.json` cache, and resolves an inline CSS issue related to Gallery blocks when upgrading to WordPress 6.1.1 from 5.8 through 6.0.3. Global styles transient-based caching was introduced in 5.8.
+Cleans `theme.json` cache, and resolves an inline CSS issue related to Gallery blocks when upgrading to WordPress 6.1.1. Tested with starting version of 5.9.5 and 6.0.3.
 
 See <a href="https://core.trac.wordpress.org/ticket/56970">Trac 56970</a> for additional details.
 
@@ -8,7 +8,7 @@ See <a href="https://core.trac.wordpress.org/ticket/56970">Trac 56970</a> for ad
 Copy `hotfix-56970.php` to your `wp-content/plugins/` folder, and activate it on the *Plugins > Installed Plugins* screen.
 
 ## Testing
-Testing requires starting with a standard WordPress install of version 5.8 through 6.0.3. Steps adapted from [Trac 56970#comment:42](https://core.trac.wordpress.org/ticket/56970#comment:42).
+Testing requires starting with a standard WordPress install of version 5.9 through 6.0.3. Steps adapted from [Trac 56970#comment:42](https://core.trac.wordpress.org/ticket/56970#comment:42).
 
 1. Create a new site using WordPress 5.9 through 6.0.3.
 2. Navigate to *Appearance > Themes* and activate **Twenty Twenty-One**.
