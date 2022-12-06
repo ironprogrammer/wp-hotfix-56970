@@ -1,4 +1,4 @@
-# Hotfix for Trac 56970
+# Test for Trac 56970
 
 Cleans `theme.json` cache, and resolves an inline CSS issue related to Gallery blocks when upgrading to WordPress 6.1.1. Tested with starting version of 5.9.5 and 6.0.3.
 
