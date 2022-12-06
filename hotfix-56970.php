@@ -1,7 +1,7 @@
 <?php
 /**
- * Description: Cleans theme.json cache. See <a href="https://core.trac.wordpress.org/ticket/56970">Trac 56970</a>.
  * Plugin Name: Test for Trac 56970
+ * Description: Moves global stylesheet from transient to WP_Object_Cache. See <a href="https://core.trac.wordpress.org/ticket/56970">Trac 56970</a>.
  * Version: 0.1
  */
 

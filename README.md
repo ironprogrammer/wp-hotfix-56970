@@ -1,6 +1,6 @@
 # Test for Trac 56970
 
-Cleans `theme.json` cache, and resolves an inline CSS issue related to Gallery blocks when upgrading to WordPress 6.1.1. Tested with starting version of 5.9.5 and 6.0.3.
+Moves global stylesheet from transient to WP_Object_Cache, and resolves an inline CSS issue related to Gallery blocks when upgrading to WordPress 6.1.1. Tested with starting version of 5.9.5 and 6.0.3.
 
 See [Trac 56970](https://core.trac.wordpress.org/ticket/56970) for additional details.
 
