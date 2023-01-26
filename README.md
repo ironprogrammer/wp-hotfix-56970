@@ -1,5 +1,15 @@
 # Hotfix for Trac 56970
 
+----
+
+### UPDATE 2023-01-26
+
+The PR on which this is hotfix is based, https://github.com/WordPress/wordpress-develop/pull/3712, has been merged in [r55148](https://core.trac.wordpress.org/changeset/55148) ([Trac 56910](https://core.trac.wordpress.org/ticket/56910)). Thank you to everyone who helped test it 🎉
+
+For users affected by the `wp_get_global_settings` cache issue, this hotfix can continue to be used until upgrading to WordPress 6.2.
+
+----
+
 Moves global stylesheet from transient to `WP_Object_Cache`, and resolves an inline CSS issue related to Gallery blocks when upgrading to WordPress 6.1.1. Tested with starting version of 5.9.5 and 6.0.3.
 
 See [Trac 56970](https://core.trac.wordpress.org/ticket/56970) for additional details.
